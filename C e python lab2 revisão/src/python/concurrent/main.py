@@ -63,16 +63,21 @@ class Classes:
         print(f"{professor}'s class {class_id} grades successfully processed!\n")
 
     def registry_to_string(self, class_id: int) -> None:
-        professor = self.professors[(class_id - 1) % len(self.professors) + 1]
+        maior_nota = 0
+        professor =self.professors[(class_id - 1) % len(self.professors) + 1]
         their_alumni = self.get_students_in_class(class_id)
 
         print(f"\n*********** {professor}'s Class {class_id} ***********")
         for student_id in their_alumni:
+            if float(self.semester_registry[student_id]['final_grade']) > float(maior_nota):
+                maior_nota = float(self.semester_registry[student_id]['final_grade'])
             print(
+
                 f"student_id: {student_id}, "
                 f"class_id: {class_id}, "
                 f"final_grade: {self.semester_registry[student_id]['final_grade']}"
             )
+        print(f"Maior nota: {maior_nota}")
 
 
 if __name__ == "__main__":
@@ -93,6 +98,7 @@ if __name__ == "__main__":
     for class_id in semester.class_ids:
         t = threading.Thread(target=semester.process_grades, args=(class_id,))
         threads.append(t)
+        t.start()
     
     for t in threads:
         t.join()
